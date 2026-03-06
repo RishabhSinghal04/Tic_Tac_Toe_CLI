@@ -19,8 +19,6 @@ Tic_Tac_Toe_CLI/
 ├── board/          # Handles board creation and display
 ├── menu/           # Game menu and navigation
 ├── player/         # Player classes (human and AI)
-├── __pycache__/    # Compiled Python files
-│
 ├── main.py         # Entry point for the game
 ├── move.py         # Logic for moves and win conditions
 ├── user_input.py   # Input handling for players
