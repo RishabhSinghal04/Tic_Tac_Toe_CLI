@@ -1,23 +1,30 @@
-def user_input(prompt: str, max_value: int, input_func=input) -> int:
+def user_input(
+    prompt: str, max_value: int, min_value: int = 0, input_func=input
+) -> int:
     """
     Prompt the user to enter a valid integer between 1 to max_value (both inclusive).
 
     Args:
         prompt (str): Message to show to user.
-        max_value (int): Maximum valid value (minimum is always 1).
+        max_value (int): Maximum valid value.
+        min_value (int): Minimum valid value (default: 1).
         input_func (callable): Function to capture user input (default: built-in input).
 
     Returns:
         int: The valid integer between 1 to max_value (both inclusive).
     """
+    if min_value > max_value:
+        raise ValueError(
+            f"Expected {min_value} <= {max_value}, found {min_value} > {max_value}"
+        )
     while True:
         user_value = _get_user_input(prompt, input_func)
-        if _is_valid_input(user_value, max_value):
+        if user_value is not None and _is_valid_input(user_value, min_value, max_value):
             return user_value
-        _print_invalid_input_message(max_value)
+        _print_invalid_input_message(min_value, max_value)
 
 
-def _get_user_input(prompt: str, input_func) -> int:
+def _get_user_input(prompt: str, input_func):
     """
     Capture and convert user input to an integer, handling errors.
 
@@ -31,10 +38,10 @@ def _get_user_input(prompt: str, input_func) -> int:
     try:
         return int(input_func(f"{prompt}: "))
     except ValueError:
-        return -1
+        return None
 
 
-def _is_valid_input(user_value: int, max_value: int) -> bool:
+def _is_valid_input(user_value: int, min_value: int, max_value: int) -> bool:
     """
     Check if the choice is within the valid range.
 
@@ -45,10 +52,10 @@ def _is_valid_input(user_value: int, max_value: int) -> bool:
     Returns:
         bool: True if valid, False otherwise.
     """
-    return 1 <= user_value <= max_value
+    return min_value <= user_value <= max_value
 
 
-def _print_invalid_input_message(max_value: int) -> None:
+def _print_invalid_input_message(min_value: int, max_value: int) -> None:
     """
     Display an error message for invalid input.
 
@@ -56,5 +63,5 @@ def _print_invalid_input_message(max_value: int) -> None:
         max_value (int): Maximum valid value.
     """
     print(
-        f"Invalid Input! Please enter a number between 1 and {max_value} (both inclusive)."
+        f"Invalid Input! Please enter a number between {min_value} and {max_value} (both inclusive)."
     )

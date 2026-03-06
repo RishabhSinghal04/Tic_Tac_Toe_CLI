@@ -5,8 +5,8 @@ from user_input import user_input
 
 
 def move(
-    board,
-    players: dict,
+    board: list[list[str]],
+    players: dict[str, str],
     ai_difficulty: str = "medium",
     current_player: str = "X",
     turns: int = 1,
@@ -24,11 +24,11 @@ def move(
     Returns:
         str: The winner symbol ("X" or "O"), or "" if no winner.
     """
-    n = len(board)
-    num_of_cells = total_cells(board)
+    n: int = len(board)
+    num_of_cells: int = total_cells(board)
 
     while turns <= num_of_cells:
-        position = _get_position(
+        position: int = _get_position(
             board, players, ai_difficulty, current_player, num_of_cells
         )
         mark_row, mark_col = divmod(position - 1, n)

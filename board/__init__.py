@@ -1,3 +1,4 @@
+from .board_size import board_size
 from .check_winner import check_winner
 from .create_board import create_board
 from .display_board import display_board

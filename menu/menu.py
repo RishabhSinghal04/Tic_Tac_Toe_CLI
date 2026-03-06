@@ -1,7 +1,8 @@
+from board import create_board, display_board, board_size
 from move import move
 from user_input import user_input
-from .constants import AI_LEVELS, MENU_OPTIONS
 from .show_menu_options import show_menu_options
+from .constants import DEFAULT_BOARD_SIZE, AI_LEVELS, MENU_OPTIONS
 
 
 def select_ai_level() -> str:
@@ -12,7 +13,7 @@ def select_ai_level() -> str:
         str: The chosen AI difficulty level.
     """
     show_menu_options(AI_LEVELS)
-    return AI_LEVELS.get(user_input("Enter your choice: ", len(AI_LEVELS)))
+    return AI_LEVELS.get(user_input("Enter your choice: ", len(AI_LEVELS)), "1")
 
 
 def display_ai_symbol_options(symbol_1: str, symbol_2: str) -> None:
@@ -42,11 +43,11 @@ def select_ai_symbol(symbol_1: str, symbol_2: str) -> str:
         str: The chosen symbol for AI.
     """
     display_ai_symbol_options(symbol_1, symbol_2)
-    choice = user_input("Enter your choice: ", 2)
+    choice: int = user_input("Enter your choice: ", 2)
     return symbol_1 if choice == 1 else symbol_2
 
 
-def menu(board):
+def menu() -> None:
     """
     Display the main menu and handle game mode selection.
 
@@ -56,23 +57,38 @@ def menu(board):
     Returns:
         None or result of move(): Depending on user choice.
     """
-    players = {"X": "human", "O": "human"}
+    n: int = DEFAULT_BOARD_SIZE
 
-    show_menu_options(MENU_OPTIONS)
-    option = user_input("Enter your choice: ", len(MENU_OPTIONS))
+    while True:
+        show_menu_options(MENU_OPTIONS)
+        option: int = user_input("Enter your choice: ", len(MENU_OPTIONS))
+        players: dict[str, str] = {"X": "human", "O": "human"}
 
-    if option == 1:
-        return _start_vs_computer(board, players)
-    elif option == 2:
-        return _start_two_players(board, players)
-    elif option == 3:
-        return _quit_game()
+        if option == 1:
+            _play_game(n, players, _start_vs_computer)
+        elif option == 2:
+            _play_game(n, players, _start_two_players)
+        elif option == 3:
+            n = board_size()
+            if n < 3:
+                n = DEFAULT_BOARD_SIZE
+        elif option == 4:
+            _about()
+        elif option == 0:
+            return _quit_game()
 
 
-def _start_vs_computer(board, players: dict) -> str:
-    ai_difficulty = select_ai_level()
+def _play_game(n: int, players: dict[str, str], game_starter) -> None:
+    board: list[list[str]] = create_board(n)
+    display_board(board)
+    result: str = game_starter(board, players)
+    _declare_result(result)
 
-    ai_symbol = select_ai_symbol("X", "O")
+
+def _start_vs_computer(board: list[list[str]], players: dict[str, str]) -> str:
+    ai_difficulty: str = select_ai_level()
+
+    ai_symbol: str = select_ai_symbol("X", "O")
     players[ai_symbol] = "ai"
 
     print(f"\nAI Difficulty Selected: {ai_difficulty}")
@@ -81,10 +97,18 @@ def _start_vs_computer(board, players: dict) -> str:
     return move(board, players, ai_difficulty)
 
 
-def _start_two_players(board, players: dict) -> str:
-    print("\n2 Players Mode\n")
+def _start_two_players(board: list[list[str]], players: dict[str, str]) -> str:
+    print("2 Players Mode\n")
     return move(board, players)
 
 
 def _quit_game() -> None:
-    print("\nQuitting the game.\n")
+    print("\nGame Exited.\n")
+
+
+def _declare_result(result: str) -> None:
+    print(f"Player {result} Wins!" if result != "" else "Game Draw\n")
+
+
+def _about() -> None:
+    print(f"Player must enter a cell number to place 'X' or 'O'\n")

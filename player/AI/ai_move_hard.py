@@ -2,11 +2,11 @@ from .minimax import minimax
 import random
 
 
-def ai_move_hard(board, ai_player: str, human_player: str) -> int:
-    n = len(board)
-    num_of_cells = n * n
-    best_score = -float("inf")
-    best_moves = []
+def ai_move_hard(board: list[list[str]], ai_player: str, human_player: str) -> int:
+    n: int = len(board)
+    num_of_cells: int = n * n
+    best_score: float = -float("inf")
+    best_moves: list[int] = []
 
     for position in range(1, num_of_cells + 1):
         row, col = divmod(position - 1, n)

@@ -1,4 +1,4 @@
-def show_menu_options(options : dict) -> None:
+def show_menu_options(options: dict) -> None:
     """
     Display menu options in a clean, numbered format.
 
@@ -6,5 +6,6 @@ def show_menu_options(options : dict) -> None:
         options (dict): A dictionary where keys are option numbers (int)
                         and values are option descriptions (str).
     """
+    print("\n")
     for key, value in options.items():
         print(f"{key}. {value}")
